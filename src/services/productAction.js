@@ -86,6 +86,24 @@ export const listOrder =async (limit) => {
     }
 
 };
+// export const updateStatus = async (limit, statusUpdates) => {
+//   try {
+
+//     // Get a reference to the order with the specified ID
+//     const orderRef = db.collection("orders").doc(limit);
+
+//     // Update the status of the order with the new value
+//     await orderRef.update(statusUpdates);
+
+//     // Return the updated order
+//     const updatedOrder = await orderRef.get();
+//     return updatedOrder.data();
+//   } catch (error) {
+//     console.error("Error updating status of order:", error);
+//     return null;
+//   }
+// };
+
 
 // export const addCart =(payload)=>{
 //   return{
