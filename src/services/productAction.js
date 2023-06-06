@@ -71,6 +71,21 @@ export const listCategories =async () => {
   }
 
 };
+export const listOrder =async (limit) => {
+  
+    try {
+      const collectionRef = db.collection('order');
+      const snapshot = await collectionRef.limit(limit).get();
+      const data = snapshot.docs.map((doc) => doc.data());
+      return data;
+      
+      // dispatch({ type: 'LISTPRODUCTS', payload: data });
+    } catch (error) {
+      // dispatch({ type: 'FETCH_DATA_FAILURE', payload: error.message });
+      return [];
+    }
+
+};
 
 // export const addCart =(payload)=>{
 //   return{
