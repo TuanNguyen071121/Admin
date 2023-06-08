@@ -2,7 +2,8 @@ import React, {useEffect, useState} from "react";
 import 'bootstrap/dist/css/bootstrap.css';
 import UserContext from "../../../context/UserContext";
 import { NavLink } from "react-router-dom";
-import {listOrder,listProducts,} from "../../../services/productAction";
+import {get, listOrder,listProducts,} from "../../../services/productAction";
+import db from "../../../db";
 // import { updateStatus } from "../../../services/productAction";
 const Order =(props)=>{
      const { state, dispatch } = React.useContext(UserContext);
@@ -23,16 +24,43 @@ const Order =(props)=>{
 //     }
 // };
     
-    
+// console.log(order)
 const refresh=async()=>{
-  const f=await listOrder();
+  const f=await get();
   const g=await listProducts();
     setProducts(g)
   setOrder(f)
 }
 
+const updateOrderStatus = async (id, newStatus) => {
+  try {
+     const conn = db.collection("order").doc(id);
+    // Gọi đến API để cập nhật trạng thái mới cho đơn hàng
+// const collectionRef = db.firestore().collection("order");
+// const newDocRef = collectionRef.doc(); // Tạo một document mới mà không cung cấp ID
+// const newDocId = newDocRef.id;
+// console.log(newDocId) // Lấy ID của document
+            conn.update({
+                status:newStatus,
+                
+            });
+    
+    // Cập nhật danh sách đơn hàng trong state
+    setOrder((prevOrders) =>
+      prevOrders.map((order) => {
+        if (order.id === id) {
+          return { ...order, status: newStatus };
+        } else {
+          return order;
+        }
+      })
+    );
+  } catch (error) {
+    console.error(error);
+  }
+};
+
         return(
-            
             <div className="col-10 content">
             <div className="row container_content">
                 <section className="h-100 h-custom">
@@ -51,7 +79,35 @@ const refresh=async()=>{
                                                     <hr className="my-4"/>
                                                     {
                                                         order.map((e,k) => {
-                                                            console.log(e.id)
+                                                            const renderOption = (value, label) => {
+                                                                // Kiểm tra nếu trạng thái đơn hàng là "6" thì chỉ hiển thị tùy chọn "Hủy"
+                                                                if (e.status === "6" && value !== "6") {
+                                                                    return null;
+                                                                }
+                                                                
+                                                                // Kiểm tra nếu trạng thái đơn hàng là "5" thì chỉ hiển thị tùy chọn "Hoàn thành"
+                                                                if (e.status === "5" && value !== "5") {
+                                                                    return null;
+                                                                }
+
+                                                                // Kiểm tra nếu trạng thái đơn hàng là "1" hoặc "2" thì chỉ hiển thị tùy chọn "Chờ xác nhận" hoặc "Đã xác nhận"
+                                                                if ((e.status === "1" || e.status === "2") && (value === "1" || value === "2")) {
+                                                                    return (
+                                                                    <option value={value} key={value}>
+                                                                        {label}
+                                                                    </option>
+                                                                    );
+                                                                }
+
+                                                                // Hiển thị tất cả các tùy chọn khác
+                                                                return (
+                                                                    <option value={value} key={value}>
+                                                                    {label}
+                                                                    </option>
+                                                                );
+                                                                };
+
+                                                            
                                                             return(
                                                                 <div className="row mb-4 d-flex justify-content-between align-items-center">
                                                         
@@ -80,17 +136,48 @@ const refresh=async()=>{
                                                             <h6 className="text-black mb-0">{e.price}</h6>
                                                         </div>
                                                         <div className="col">
-                                                            <h6 className="text-muted">Trạng thái</h6>
-                                                            <select className="col form-select form-select-lg mb-3" aria-label=".form-select-lg example" value={e.status} onChange={(event) => {
+                                                                        <h6 className="text-muted">Trạng thái</h6>
+                                                                        <select
+                                                                            className="col form-select form-select-lg mb-3"
+                                                                            aria-label=".form-select-lg example"
+                                                                            value={e.status}
+                                                                            onChange={(event) => {
                                                                                 const newStatus = event.target.value;
-                                                                                    // Cập nhật trạng thái mới cho đơn hàng
-                                                                                }}
-                                                                                >
-                                                                                <option value="1">Xác nhận</option>
-                                                                                <option value="2">Giao hàng</option>
-                                                                                <option value="3">Hủy</option>
-                                                                                </select>
-                                                        </div>
+                                                                                // Tạo ra đối tượng đơn hàng mới với trạng thái mới
+                                                                                const updatedOrder = { ...e, status: newStatus };
+                                                                                // Cập nhật đơn hàng trong state
+                                                                                setOrder((prevOrders) =>
+                                                                                prevOrders.map((order) => (order.id === e.id ? updatedOrder : order))
+                                                                                );
+                                                                                // Cập nhật trạng thái của đơn hàng trên server
+                                                                                updateOrderStatus(e.id, newStatus);
+                                                                            }}
+                                                                            >
+                                                                            {/* {renderOption("1", "Chờ xác nhận")}
+                                                                            {renderOption("2", "Đã xác nhận")} */}
+                                                                            {e.status === "1" && (renderOption("1","Chờ xác nhận"))}
+                                                                            {e.status === "1" && (renderOption("2","Đã xác nhận"))}
+                                                                            {e.status === "2" && (renderOption("2","Đã xác nhận"))}
+                                                                            {e.status === "2" && (renderOption("3","Đang giao hàng"))}
+                                                                            {e.status === "2" && (renderOption("6","Hủy"))}
+                                                                            {e.status === "3" && (renderOption("3","Đang giao hàng"))}
+                                                                            {e.status === "3" && (renderOption("4","Đã giao hàng"))}
+                                                                            {e.status === "4" && (renderOption("4","Đã giao hàng"))}
+                                                                            
+                                                                            {/* {renderOption("3", "Đang Giao Hàng")}
+                                                                            {renderOption("4", "Đã Giao Hàng")} */}
+                                                                            {e.status === "4" && (renderOption("5","Hoàn thành"))}
+                                                                            {e.status === "5" && (renderOption("5","Hoàn thành"))}
+                                                                            {e.status === "1" && (renderOption("6","Hủy"))}
+                                                                            {e.status === "6" && (renderOption("6","Hủy"))}
+                                                                            
+                                                                            
+                                                                            </select>
+                                                                        </div>
+
+
+
+
                                                         
                                                         
                                                         <button type="button"className="col-1 btn btn-link" data-bs-toggle="modal" data-bs-target={`#exampleModal-${e.id}`}>
@@ -101,7 +188,7 @@ const refresh=async()=>{
                                                         <div  class="modal-dialog modal-dialog-centered">
                                                             <div class="modal-content"  >
                                                             <div class="modal-header">
-                                                                <h1 class="modal-title fs-5" id="exampleModalLabel">Thông tin sản phẩm</h1>
+                                                                <h1 class="modal-title fs-5" id="exampleModalLabel">Thông tin sản phẩm của đơn hàng {e.id}</h1>
                                                                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                                             </div>
                                                             <div class="modal-body">
@@ -132,47 +219,6 @@ const refresh=async()=>{
                                                                         
                                                                     </div>
                                                                     ))}
-
-                                                                
-                                                                {/* {
-                                                                    e?.products &&e?.products.map((t,l) =>{
-                                                                    {
-
-                                                                    }
-                                                                            })
-                                                                            
-                                                                        
-                                                                } */}
-                                                                {/* {e?.products &&
-                                                                e?.products.map((t,l) => {
-                                                                    {products &&
-                                                                        products.map((v,c)=>{
-                                                                            console.log(t)
-                                                                            console.log(v)
-                                                                            if(t.id==v.id){
-                                                                                return(
-                                                                <div className="row mb-4 d-flex justify-content-between align-items-center">
-                                                                    <div className="col-md-2 col-lg-2 col-xl-2">
-                                                                        <img src={v.thumbnail}
-                                                                            className="img-fluid rounded-3" alt="Cotton T-shirt"/>
-                                                                    </div>
-                                                                    <div className="col-md-3 col-lg-3 col-xl-3">
-                                                                        <h6 className="text-muted">Tên sản phẩm</h6>
-                                                                        <h6 className="text-black mb-0">{v.name}</h6>
-                                                                    </div>
-                                                                    <div className="col-md-3 col-lg-3 col-xl-2 ">
-                                                                        <h6 className="text-muted">Số Lượng</h6>
-                                                                        <h6 className="text-black mb-0">{t.qty}</h6>
-                                                                    </div>
-                                                                </div>
-                                                                
-                                                                   )
-                                                                            }
-                                                                        })
-                                                                    }
-                                                                 
-                                                                      })
-                                                                    } */}
                                                             </div>
                                                             
                                                             </div>

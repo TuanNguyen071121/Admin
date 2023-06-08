@@ -86,6 +86,21 @@ export const listOrder =async (limit) => {
     }
 
 };
+export const get = async ()=>{
+    const order = [];
+    try {
+        const conn = db.collection("order");
+        const data = await conn.get();
+        data.docs.map(item=>{
+            const d = item.data();// day moi la du lieu cua tung product
+            d.id = item.id;// nap them id vao san pham
+            order.push(d);                 
+        });
+    } catch (error) {
+        
+    }
+    return order;
+}
 // export const updateStatus = async (limit, statusUpdates) => {
 //   try {
 
