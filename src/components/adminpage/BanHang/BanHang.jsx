@@ -8,6 +8,27 @@ import db from "../../../db";
 const Order =(props)=>{
      const { state, dispatch } = React.useContext(UserContext);
     const [order,setOrder]=useState([]);
+    const [searchID, setSearchID] = useState("");
+    const [statusFilter, setStatusFilter] = useState("");
+
+        const handleStatusFilterChange = (e) => {
+        setStatusFilter(e.target.value);
+        };
+
+    const handleSearch = (e) => {
+    setSearchID(e.target.value);
+    };
+
+
+function filterOrders(orders, searchID, statusFilter) {
+  return orders.filter((o) => {
+    const idMatch = o.id.toString().includes(searchID);
+    const statusMatch = o.status.includes(statusFilter);
+    return idMatch && statusMatch;
+  });
+}
+const filteredOrders = filterOrders(order, searchID, statusFilter);
+    
     const [products,setProducts]=useState([]);
         useEffect(()=>{
     refresh();
@@ -31,6 +52,7 @@ const refresh=async()=>{
     setProducts(g)
   setOrder(f)
 }
+
 
 const updateOrderStatus = async (id, newStatus) => {
   try {
@@ -74,12 +96,34 @@ const updateOrderStatus = async (id, newStatus) => {
                                                 <div className="p-5">
                                                     <div className="d-flex justify-content-between align-items-center mb-5">
                                                         <h1 className="fw-bold mb-0 text-black"> Danh Sách Đơn Hàng</h1>
-                                                        <h6 className="mb-0 text-muted">3 items</h6>
+                                                        
+                                                        <h6 className="mb-0 text-muted">{order.length} items</h6>
                                                     </div>
+                                                    <div className="row">
+                                                        <div className="col-9">
+                                                            <label for="inputPassword5" className="form-label">Tìm kiếm</label>
+                                                    <input type="text" id="searchID" className="form-control" aria-labelledby="passwordHelpBlock"  onChange={handleSearch}  value={searchID} />
+                                                        <div id="passwordHelpBlock" className="form-text">
+                                                        Nhập mã đơn hàng cần tìm vào ô
+                                                        </div>
+                                                        </div>
+                                                        <div className="col-3">
+                                                        <label for="" className="form-label">Lọc trạng thái</label>
+                                                        <select className="form-select" aria-label="Default select example" id="statusFilter" onChange={handleStatusFilterChange} value={statusFilter} >
+                                                            <option value="">Tất cả</option>
+                                                            <option value="1">Chờ xác nhận</option>
+                                                            <option value="2">Đã xác nhận</option>
+                                                            <option value="3">Đang giao hàng</option>
+                                                            <option value="4">Đã giao hàng</option>
+                                                            <option value="5">Hoàn thành</option>
+                                                            <option value="6">Đã hủy</option>
+                                                            </select>
+                                                        </div>
+                                                    </div>
+                                                    
                                                     <hr className="my-4"/>
-                                                    {
-                                                        order.map((e,k) => {
-                                                            const renderOption = (value, label) => {
+                                                    {filteredOrders.map((e, k) => {
+                                                        const renderOption = (value, label) => {
                                                                 // Kiểm tra nếu trạng thái đơn hàng là "6" thì chỉ hiển thị tùy chọn "Hủy"
                                                                 if (e.status === "6" && value !== "6") {
                                                                     return null;
@@ -181,17 +225,17 @@ const updateOrderStatus = async (id, newStatus) => {
                                                         
                                                         
                                                         <button type="button"className="col-1 btn btn-link" data-bs-toggle="modal" data-bs-target={`#exampleModal-${e.id}`}>
-                                                                <i class=" bi bi-pencil-square"></i>
+                                                                <i className=" bi bi-pencil-square"></i>
                                                         </button>
                                                         
                                                         <div  className="modal fade" id={`exampleModal-${e.id}`} tabIndex="-1" aria-labelledby={`exampleModalLabel-${e.id}`} aria-hidden="true">
-                                                        <div  class="modal-dialog modal-dialog-centered">
-                                                            <div class="modal-content"  >
-                                                            <div class="modal-header">
-                                                                <h1 class="modal-title fs-5" id="exampleModalLabel">Thông tin sản phẩm của đơn hàng {e.id}</h1>
-                                                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                        <div  className="modal-dialog modal-dialog-centered">
+                                                            <div className="modal-content"  >
+                                                            <div className="modal-header">
+                                                                <h1 className="modal-title fs-5" id="exampleModalLabel">Thông tin sản phẩm của đơn hàng {e.id}</h1>
+                                                                <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                                             </div>
-                                                            <div class="modal-body">
+                                                            <div className="modal-body">
                                                                     {e?.products &&e?.products.map((item) => (
                                                                     <div key={item.id}>
                                                                         
@@ -229,9 +273,10 @@ const updateOrderStatus = async (id, newStatus) => {
                                                     </div>
                 
                                                             )
-                                                        })
-                                                        }
-                                                    
+                                                    })}
+                                                   
+
+                                                   
                 
                                                     
                 
