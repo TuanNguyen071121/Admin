@@ -118,6 +118,9 @@ const updateOrderStatus = async (id, newStatus) => {
                                                             <option value="5">Hoàn thành</option>
                                                             <option value="6">Đã hủy</option>
                                                             </select>
+                                                            <div id="passwordHelpBlock" className="form-text">
+                                                        Chọn trạng thái đơn muốn lọc
+                                                        </div>
                                                         </div>
                                                     </div>
                                                     
