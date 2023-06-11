@@ -35,6 +35,9 @@ const Homepage = () => {
     });
   }
   const filteredOrders = filterOrders(order, searchID, statusFilter);
+  const total = order.reduce((accumulator, product) => {
+  return accumulator + product.price;
+}, 0);
 
   const [products, setProducts] = useState([]);
   useEffect(() => {
@@ -68,6 +71,7 @@ const Homepage = () => {
     } catch (error) {
       console.error(error);
     }
+  
   };
   return (
     <div className="col-10 content">
@@ -77,7 +81,7 @@ const Homepage = () => {
             <h5 className="card-header">Đơn hàng</h5>
             <div className="card-body">
               <p className="card-text money">
-                <i className="bi bi-currency-dollar"></i>100000
+                <i className="bi bi-currency-dollar"></i>{total}
               </p>
             </div>
           </div>

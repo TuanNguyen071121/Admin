@@ -10,21 +10,22 @@ import db from "../db"
 //   };
 // }
 
-export const listProducts =async (limit) => {
+// export const listProducts =async (limit) => {
   
-    try {
-      const collectionRef = db.collection('product');
-      const snapshot = await collectionRef.limit(limit).get();
-      const data = snapshot.docs.map((doc) => doc.data());
-      return data;
+//     try {
+//       const collectionRef = db.collection('product');
+//       const snapshot = await collectionRef.limit(limit).get();
+//       const data = snapshot.docs.map((doc) => doc.data());
+//       return data;
       
-      // dispatch({ type: 'LISTPRODUCTS', payload: data });
-    } catch (error) {
-      // dispatch({ type: 'FETCH_DATA_FAILURE', payload: error.message });
-      return [];
-    }
+//       // dispatch({ type: 'LISTPRODUCTS', payload: data });
+//     } catch (error) {
+//       // dispatch({ type: 'FETCH_DATA_FAILURE', payload: error.message });
+//       return [];
+//     }
 
-};
+// };
+
 export const listStaff =async (limit) => {
   
     try {
@@ -100,6 +101,21 @@ export const get = async ()=>{
         
     }
     return order;
+}
+export const listProducts = async ()=>{
+    const products = [];
+    try {
+        const conn = db.collection("product");
+        const data = await conn.get();
+        data.docs.map(item=>{
+            const d = item.data();// day moi la du lieu cua tung product
+            d.id = item.id;// nap them id vao san pham
+            products.push(d);                 
+        });
+    } catch (error) {
+        
+    }
+    return products;
 }
 // export const updateStatus = async (limit, statusUpdates) => {
 //   try {

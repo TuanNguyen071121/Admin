@@ -1,7 +1,7 @@
 import React from "react";
 import 'bootstrap/dist/css/bootstrap.css';
-export default class Editproduct extends React.Component{
-    render(){
+const Editproduct =(props)=>{
+
         return(
              <div className="col-10 content">
                
@@ -109,4 +109,4 @@ export default class Editproduct extends React.Component{
             
         );
     }
-}
+export default Editproduct;
