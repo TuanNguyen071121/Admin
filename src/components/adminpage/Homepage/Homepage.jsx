@@ -20,25 +20,12 @@ const Homepage = () => {
         backgroundColor: "rgba(75,192,192,0.2)",
         borderColor: "rgba(75,192,192,1)",
       },
-      //   {
-      //     label: "Second dataset",
-      //     data: [33, 25, 35, 51, 54, 76],
-      //     fill: false,
-      //     borderColor: "#742774"
-      //   }
     ],
   };
   const [order, setOrder] = useState([]);
   const [searchID, setSearchID] = useState("");
   const [statusFilter, setStatusFilter] = useState("");
 
-  const handleStatusFilterChange = (e) => {
-    setStatusFilter(e.target.value);
-  };
-
-  const handleSearch = (e) => {
-    setSearchID(e.target.value);
-  };
 
   function filterOrders(orders, searchID, statusFilter) {
     return orders.filter((o) => {
@@ -53,19 +40,7 @@ const Homepage = () => {
   useEffect(() => {
     refresh();
   }, []);
-  // const updateOrderStatus = async (limit, newStatus) => {
-  //     try {
-  //         await updateStatus(limit, { status: newStatus });
-  //         const updatedOrder = { ...order.find((o) => o.id === limit), status: newStatus };
-  //         setOrder((order) =>
-  //             order.map((o) => (o.id === limit ? updatedOrder : o))
-  //         );
-  //     } catch (error) {
-  //         console.error(error);
-  //     }
-  // };
 
-  // console.log(order)
   const refresh = async () => {
     const f = await get();
     const g = await listProducts();
@@ -76,11 +51,6 @@ const Homepage = () => {
   const updateOrderStatus = async (id, newStatus) => {
     try {
       const conn = db.collection("order").doc(id);
-      // Gọi đến API để cập nhật trạng thái mới cho đơn hàng
-      // const collectionRef = db.firestore().collection("order");
-      // const newDocRef = collectionRef.doc(); // Tạo một document mới mà không cung cấp ID
-      // const newDocId = newDocRef.id;
-      // console.log(newDocId) // Lấy ID của document
       conn.update({
         status: newStatus,
       });
