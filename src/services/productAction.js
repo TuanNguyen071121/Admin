@@ -26,36 +26,66 @@ import db from "../db"
 
 // };
 
-export const listStaff =async (limit) => {
+// export const listStaff =async (limit) => {
   
-    try {
-      const collectionRef = db.collection('staff');
-      const snapshot = await collectionRef.limit(limit).get();
-      const data = snapshot.docs.map((doc) => doc.data());
-      return data;
+//     try {
+//       const collectionRef = db.collection('staff');
+//       const snapshot = await collectionRef.limit(limit).get();
+//       const data = snapshot.docs.map((doc) => doc.data());
+//       return data;
       
-      // dispatch({ type: 'LISTPRODUCTS', payload: data });
-    } catch (error) {
-      // dispatch({ type: 'FETCH_DATA_FAILURE', payload: error.message });
-      return [];
-    }
+//       // dispatch({ type: 'LISTPRODUCTS', payload: data });
+//     } catch (error) {
+//       // dispatch({ type: 'FETCH_DATA_FAILURE', payload: error.message });
+//       return [];
+//     }
 
-};
-export const listBlog =async (limit) => {
+// };
+export const listStaff = async ()=>{
+    const staffs = [];
+    try {
+        const conn = db.collection("staff");
+        const data = await conn.get();
+        data.docs.map(item=>{
+            const d = item.data();// day moi la du lieu cua tung product
+            d.id = item.id;// nap them id vao san pham
+            staffs.push(d);                 
+        });
+    } catch (error) {
+        
+    }
+    return staffs;
+}
+// export const listBlog =async (limit) => {
   
-    try {
-      const collectionRef = db.collection('blog');
-      const snapshot = await collectionRef.limit(limit).get();
-      const data = snapshot.docs.map((doc) => doc.data());
-      return data;
+//     try {
+//       const collectionRef = db.collection('blog');
+//       const snapshot = await collectionRef.limit(limit).get();
+//       const data = snapshot.docs.map((doc) => doc.data());
+//       return data;
       
-      // dispatch({ type: 'LISTPRODUCTS', payload: data });
-    } catch (error) {
-      // dispatch({ type: 'FETCH_DATA_FAILURE', payload: error.message });
-      return [];
-    }
+//       // dispatch({ type: 'LISTPRODUCTS', payload: data });
+//     } catch (error) {
+//       // dispatch({ type: 'FETCH_DATA_FAILURE', payload: error.message });
+//       return [];
+//     }
 
-};
+// };
+export const listBlog = async ()=>{
+    const blogs = [];
+    try {
+        const conn = db.collection("blog");
+        const data = await conn.get();
+        data.docs.map(item=>{
+            const d = item.data();// day moi la du lieu cua tung product
+            d.id = item.id;// nap them id vao san pham
+            blogs.push(d);                 
+        });
+    } catch (error) {
+        
+    }
+    return blogs;
+}
 
 export const listCategories =async () => {
   

@@ -6,7 +6,7 @@ import Chart from "chart.js/auto";
 import "bootstrap/dist/css/bootstrap.css";
 import UserContext from "../../../context/UserContext";
 import { Link, NavLink } from "react-router-dom";
-import { get, listOrder, listProducts } from "../../../services/productAction";
+import { get, listOrder, listProducts, listStaff } from "../../../services/productAction";
 import db from "../../../db";
 
 const Homepage = () => {
@@ -22,6 +22,12 @@ const Homepage = () => {
       },
     ],
   };
+      const [staffs, setStaff]=useState([]);
+        useEffect(()=>{
+    refresh();
+    },[])
+
+
   const [order, setOrder] = useState([]);
   const [searchID, setSearchID] = useState("");
   const [statusFilter, setStatusFilter] = useState("");
@@ -47,6 +53,9 @@ const Homepage = () => {
   const refresh = async () => {
     const f = await get();
     const g = await listProducts();
+      const d=await listStaff();
+
+  setStaff(d)
     setProducts(g);
     setOrder(f);
   };
@@ -81,7 +90,7 @@ const Homepage = () => {
             <h5 className="card-header">Đơn hàng</h5>
             <div className="card-body">
               <p className="card-text money">
-                <i className="bi bi-currency-dollar"></i>{total}
+                <i className="bi "></i>{order.length}
               </p>
             </div>
           </div>
@@ -91,7 +100,7 @@ const Homepage = () => {
             <h5 className="card-header">Doanh thu</h5>
             <div className="card-body">
               <p className="card-text money">
-                <i className="bi bi-currency-dollar"></i>100000
+                <i className="bi bi-currency-dollar"></i>{total}
               </p>
             </div>
           </div>
@@ -101,7 +110,7 @@ const Homepage = () => {
             <h5 className="card-header">Nhân sự</h5>
             <div className="card-body">
               <p className="card-text money">
-                <i className="bi bi-currency-dollar"></i>100000
+                <i className="bi "></i>{staffs.length}
               </p>
             </div>
           </div>

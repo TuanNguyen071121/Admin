@@ -1,7 +1,25 @@
-import React from "react";
+import React, { useState } from "react";
 import 'bootstrap/dist/css/bootstrap.css';
-export default class Addnhanvien extends React.Component{
-    render(){
+import db from "../../../db";
+import UserContext from "../../../context/UserContext";
+const Addnhanvien =(props)=>{
+ const [staff,setStaffs]=useState({});
+     const [form_product,setform_product]=useState({});
+
+ const formSubmit=async(e)=>{
+    e.preventDefault();
+    const conn = db.collection("staff");
+            await conn.add(form_product);  
+            this.refresh();  
+ };  
+ const handleInput=(event)=>{
+        console.log(event)
+        form_product[event.target.name] = event.target.value;
+        setStaffs(
+            form_product
+        ) 
+ }
+
         return(
              <div className="col-10 content">
                
@@ -19,84 +37,48 @@ export default class Addnhanvien extends React.Component{
                                                         <h1 className="fw-bold mb-0 text-black"> Thêm Nhân Viên</h1>
                                                         
                                                     </div>
+                                                    <form method="post" onSubmit={formSubmit}>
                                                     <hr className="my-4"/>
                                                         <div className="mb-3">
                                                             <label for="exampleFormControlInput1" className="form-label tille_content" >Tên Nhân Viên</label>
-                                                            <input type="text" className="form-control" id="exampleFormControlInput1" placeholder="Nhập Tên Nhân Viên"/>
+                                                            <input type="text" className="form-control" onChange={handleInput} id="exampleFormControlInput1" name="name" placeholder="Nhập Tên Nhân Viên"/>
                                                         </div>
                                                         <div className="mb-3">
                                                             <label for="exampleFormControlInput1" className="form-label tille_content" >Mã Nhân Viên</label>
-                                                            <input type="text" className="form-control" id="exampleFormControlInput1" placeholder="Nhập Mã Nhân Viên"/>
+                                                            <input type="text" className="form-control" onChange={handleInput} id="exampleFormControlInput1" name="code" placeholder="Nhập Mã Nhân Viên"/>
                                                         </div>
-                                                        <div className="mb-3">
-                                                            <label for="exampleFormControlInput1" className="form-label tille_content" >Mật Khẩu Đăng nhập</label>
-                                                            <input type="text" className="form-control" id="exampleFormControlInput1" placeholder="Nhập Mật Khẩu"/>
-                                                        </div>
+                                                        
                                                         <div className="mb-3">
                                                             <label for="exampleFormControlInput1" className="form-label tille_content" >Địa chỉ</label>
-                                                            <input type="text" className="form-control" id="exampleFormControlInput1" placeholder="Nhập Địa Chỉ"/>
+                                                            <input type="text" onChange={handleInput} className="form-control" id="exampleFormControlInput1" name="add" placeholder="Nhập Địa Chỉ"/>
                                                         </div>
                                                         
                                                         <div className="mb-3">
                                                             <label for="exampleFormControlInput1" className="form-label tille_content">Tuổi</label>
-                                                            <input type="number" className="form-control" id="exampleFormControlInput1" placeholder=""/>
+                                                            <input type="number" onChange={handleInput} className="form-control" id="exampleFormControlInput1" name="age" placeholder=""/>
                                                         </div>
                                                         <div className="mb-3">
                                                             <label for="exampleFormControlInput1" className="form-label tille_content">SĐT</label>
-                                                            <input type="number" className="form-control" id="exampleFormControlInput1" placeholder=""/>
+                                                            <input type="number" onChange={handleInput} className="form-control" id="exampleFormControlInput1" name="phone" placeholder=""/>
                                                         </div>
                                                         <div className="mb-3">
                                                             <label for="exampleFormControlInput1" className="form-label tille_content">Lương</label>
-                                                            <input type="number" className="form-control" id="exampleFormControlInput1" placeholder="_vnd"/>
+                                                            <input type="number" onChange={handleInput} className="form-control" id="exampleFormControlInput1" name="salary" placeholder="_vnd"/>
+                                                        </div>
+                                                        <div className="mb-3">
+                                                            <label for="exampleFormControlInput1" className="form-label tille_content">Ảnh nhân viên</label>
+                                                            <input type="text" onChange={handleInput} className="form-control" id="exampleFormControlInput1" name="thumbnail" placeholder="link"/>
                                                         </div>
                                                         
-                                                        <div className="mb-3">
-                                                            <label for="formFileSm" className="form-label tille_content">Ảnh Nhân Viên</label>
-                                                            <input className="form-control form-control-sm" id="formFileSm" type="file"/>
-                                                        </div>
+                                                        
                                                         <div className="mb-3">
                                                             <label for="exampleFormControlInput1" className="form-label tille_content" >Chức Vụ</label>
-                                                            <input type="text" className="form-control" id="exampleFormControlInput1" placeholder="Nhập Chức Vụ"/>
+                                                            <input type="text" onChange={handleInput} className="form-control" id="exampleFormControlInput1" name="position" placeholder="Nhập Chức Vụ"/>
                                                         </div>
-                                                        <div className="mb-3">
-                                                            <label for="formFileSm" className="form-label tille_content">Phân Quyền</label>
-                                                            <div className="form-check">
-                                                                <input className="form-check-input" type="checkbox" value="" id="flexCheckDefault"/>
-                                                                <label className="form-check-label" for="flexCheckDefault">
-                                                                    Quyền 1
-                                                                </label>
-                                                            </div>
-                                                            <div className="form-check">
-                                                                <input className="form-check-input" type="checkbox" value="" id="flexCheckDefault"/>
-                                                                <label className="form-check-label" for="flexCheckDefault">
-                                                                    Quyền 2
-                                                                </label>
-                                                            </div>
-                                                            
-                                                            <div className="form-check">
-                                                                <input className="form-check-input" type="checkbox" value="" id="flexCheckDefault"/>
-                                                                <label className="form-check-label" for="flexCheckDefault">
-                                                                    Quyền 3
-                                                                </label>
-                                                            </div>
-                                                            <div className="form-check">
-                                                                <input className="form-check-input" type="checkbox" value="" id="flexCheckDefault"/>
-                                                                <label className="form-check-label" for="flexCheckDefault">
-                                                                    Quyền 3
-                                                                </label>
-                                                            </div>
-                                                            <div className="form-check">
-                                                                <input className="form-check-input" type="checkbox" value="" id="flexCheckDefault"/>
-                                                                <label className="form-check-label" for="flexCheckDefault">
-                                                                    Quyền 3
-                                                                </label>
-                                                            </div>
-                                                            
-                                                            
-                                                        </div>
+                                                        
                                                     <hr className="my-4"/>
-                                                        <button type="button" className="btn btn-outline-secondary">Thêm Nhân Viên</button>
-                
+                                                        <button type="sumbit" className="btn btn-outline-secondary">Thêm Nhân Viên</button>
+                                                    </form>
                                                     
                                                 </div>
                                             </div>
@@ -112,5 +94,5 @@ export default class Addnhanvien extends React.Component{
             </div>
             
         );
-    }
-}   
+}
+export default Addnhanvien;

@@ -3,12 +3,21 @@ import 'bootstrap/dist/css/bootstrap.css';
 import UserContext from "../../../context/UserContext";
 import { NavLink } from "react-router-dom";
 import {listStaff} from "../../../services/productAction";
+import db from "../../../db";
 const Listnhanvien =(props)=>{
      const { state, dispatch } = React.useContext(UserContext);
+     const [form_product,setform_product]=useState({});
     const [staffs, setStaff]=useState([]);
         useEffect(()=>{
     refresh();
     },[])
+
+    const handleInput=(event)=>{
+    setform_product({
+        ...form_product,
+        [event.target.name]: event.target.value
+    });
+}
 
 const refresh=async()=>{
   const d=await listStaff();
@@ -16,6 +25,11 @@ const refresh=async()=>{
   setStaff(d)
 
 
+}
+const deleteProduct = async (id) => {
+    const conn = db.collection("staff").doc(id);
+    await conn.delete();  
+    refresh();  
 }
         return(
             
@@ -37,7 +51,7 @@ const refresh=async()=>{
                                                 <div className="p-5">
                                                     <div className="d-flex justify-content-between align-items-center mb-5">
                                                         <h1 className="fw-bold mb-0 text-black"> Danh Sách Nhân Viên</h1>
-                                                        <h6 className="mb-0 text-muted">3 items</h6>
+                                                        <h6 className="mb-0 text-muted">{staffs.length} items</h6>
                                                     </div>
                                                     <hr className="my-4"/>
                                                     {
@@ -62,7 +76,7 @@ const refresh=async()=>{
                                                         </div>
                                                         <div className="col">
                                                             <h6 className="text-muted">Địa Chỉ</h6>
-                                                            <h6 className="text-black mb-0">{e.address}</h6>
+                                                            <h6 className="text-black mb-0">{e.add}</h6>
                                                         </div>
                                                         <div className="col">
                                                             <h6 className="text-muted">Lương</h6>
@@ -73,10 +87,78 @@ const refresh=async()=>{
                                                             <h6 className="text-black mb-0">{e.position}</h6>
                                                         </div>
                                                         <div className="col-md-1 col-lg-1 col-xl-1 text-end">
-                                                            <a href="#!" className="text-muted"><i class="bi bi-pencil-square"></i></a>
+                                                            <button type="button"className="col-1 btn btn-link" data-bs-toggle="modal" data-bs-target={`#exampleModal-${e.id}`}>
+                                                                <i className=" bi bi-pencil-square"></i>
+                                                        </button>
+                                                        <div  className="modal fade" id={`exampleModal-${e.id}`} tabIndex="-1" aria-labelledby={`exampleModalLabel-${e.id}`} aria-hidden="true">
+                                                        <div className="modal-dialog modal-dialog-scrollable">
+                                                            <div className="modal-content">
+                                                            <div className="modal-header">
+                                                                <h1 className="modal-title fs-5" id="exampleModalLabel">Sửa thông tin nhân viên </h1>
+                                                                <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                            </div>
+                                                            <div className="modal-body">
+                                                        <form method="post" onSubmit={async(event)=> {
+                                                                                 event.preventDefault();
+                                                                                    const id = e.id;
+                                                                                    const conn = db.collection("staff").doc(id);
+                                                                                    await conn.update(form_product);  
+                                                                                    refresh();  
+                                                                            }} >
+                                                            
+                                                       
+                                                    <hr className="my-4"/>
+                                                        <div className="mb-3">
+                                                            <label for="exampleFormControlInput1" className="form-label tille_content" >Tên Nhân Viên</label>
+                                                            <input type="text" className="form-control" onChange={handleInput} id="exampleFormControlInput1" name="name" placeholder={e.name}/>
+                                                        </div>
+                                                        <div className="mb-3">
+                                                            <label for="exampleFormControlInput1" className="form-label tille_content" >Mã Nhân Viên</label>
+                                                            <input type="text" className="form-control" onChange={handleInput} id="exampleFormControlInput1" name="code" placeholder={e.code}/>
+                                                        </div>
+                                                        
+                                                        <div className="mb-3">
+                                                            <label for="exampleFormControlInput1" className="form-label tille_content" >Địa chỉ</label>
+                                                            <input type="text" onChange={handleInput} className="form-control" id="exampleFormControlInput1" name="add" placeholder={e.add}/>
+                                                        </div>
+                                                        
+                                                        <div className="mb-3">
+                                                            <label for="exampleFormControlInput1" className="form-label tille_content">Tuổi</label>
+                                                            <input type="number" onChange={handleInput} className="form-control" id="exampleFormControlInput1" name="age" placeholder={e.age}/>
+                                                        </div>
+                                                        <div className="mb-3">
+                                                            <label for="exampleFormControlInput1" className="form-label tille_content">SĐT</label>
+                                                            <input type="number" onChange={handleInput} className="form-control" id="exampleFormControlInput1" name="phone" placeholder={e.phone}/>
+                                                        </div>
+                                                        <div className="mb-3">
+                                                            <label for="exampleFormControlInput1" className="form-label tille_content">Lương</label>
+                                                            <input type="number" onChange={handleInput} className="form-control" id="exampleFormControlInput1" name="salary" placeholder={e.salary}/>
+                                                        </div>
+                                                        <div className="mb-3">
+                                                            <label for="exampleFormControlInput1" className="form-label tille_content">Ảnh nhân viên</label>
+                                                            <input type="text" onChange={handleInput} className="form-control" id="exampleFormControlInput1" name="thumbnail" placeholder={e.thumbnail}/>
+                                                        </div>
+                                                        
+                                                        
+                                                        <div className="mb-3">
+                                                            <label for="exampleFormControlInput1" className="form-label tille_content" >Chức Vụ</label>
+                                                            <input type="text" onChange={handleInput} className="form-control" id="exampleFormControlInput1" name="position" placeholder={e.position}/>
+                                                        </div>
+                                                        
+                                                    <hr className="my-4"/>
+                                                        <button type="sumbit" className="btn btn-outline-secondary">Lưu</button>
+                                                    </form>
+                                                            </div>
+                                                            {/* <div className="modal-footer">
+                                                                
+                                                                <button type="button" className="btn btn-primary">Save changes</button>
+                                                            </div> */}
+                                                            </div>
+                                                        </div>
+                                                        </div>
                                                         </div>
                                                         <div className="col-md-1 col-lg-1 col-xl-1 text-end">
-                                                            <a href="#!" className="text-muted"><i className="bi bi-x"></i></a>
+                                                            <i className="bi bi-x" onClick={() => deleteProduct(e.id)}></i>
                                                         </div>
                                                     </div>
                 

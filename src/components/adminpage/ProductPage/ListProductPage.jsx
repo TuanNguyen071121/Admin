@@ -27,7 +27,11 @@ const handleInput=(event)=>{
         [event.target.name]: event.target.value
     });
 }
-
+const deleteProduct = async (id) => {
+    const conn = db.collection("product").doc(id);
+    await conn.delete();  
+    refresh();  
+}
 
 const refresh=async()=>{
   const t=await listProducts();
@@ -57,7 +61,7 @@ const refresh=async()=>{
                                                 <div className="p-5">
                                                     <div className="d-flex justify-content-between align-items-center mb-5">
                                                         <h1 className="fw-bold mb-0 text-black">Products List</h1>
-                                                        <h6 className="mb-0 text-muted">3 items</h6>
+                                                        <h6 className="mb-0 text-muted">{products.length} items</h6>
                                                     </div>
                                                     <hr className="my-4"/>
                                                     {
@@ -101,7 +105,7 @@ const refresh=async()=>{
                                                                                     const conn = db.collection("product").doc(id);
                                                                                     await conn.update(form_product);  
                                                                                     refresh();  
-                                                                            }}    >
+                                                                            }} >
                                                             
                                                         <div className="mb-3">
                                                             <label for="exampleFormControlInput1" className="form-label tille_content" >Tên Sản Phẩm</label>
@@ -178,7 +182,7 @@ const refresh=async()=>{
                                                         </div>
                                                         </div>
                                                         <div className="col-md-1 col-lg-1 col-xl-1 text-end">
-                                                            <a href="#!" className="text-muted"><i className="bi bi-x"></i></a>
+                                                           <i className="bi bi-x" onClick={() => deleteProduct(e.id)}></i>
                                                         </div>
                                                     </div>
                                                             )
