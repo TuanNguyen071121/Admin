@@ -81,7 +81,7 @@ const updateOrderStatus = async (id, newStatus) => {
     console.error(error);
   }
 };
-
+console.log(products)
         return(
             <div className="col-10 content">
             <div className="row container_content">
@@ -239,7 +239,7 @@ const updateOrderStatus = async (id, newStatus) => {
                                                                 <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                                             </div>
                                                             <div className="modal-body">
-                                                                    {e?.products &&e?.products.map((item) => (
+                                                                    {e?.product &&e?.product.map((item) => (
                                                                     <div key={item.id}>
                                                                         
                                                                         {products.map((product) => {
