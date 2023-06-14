@@ -10,6 +10,7 @@ const Addnhanvien =(props)=>{
     e.preventDefault();
     const conn = db.collection("staff");
             await conn.add(form_product);  
+            alert("Thêm nhân viên thành công")
             this.refresh();  
  };  
  const handleInput=(event)=>{

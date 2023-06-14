@@ -11,6 +11,7 @@ const Addproduct=()=>{
     e.preventDefault();
     const conn = db.collection("product");
             await conn.add(form_product);  
+            alert("Thêm sản phẩm thành công")
             this.refresh();  
  };  
  const handleInput=(event)=>{

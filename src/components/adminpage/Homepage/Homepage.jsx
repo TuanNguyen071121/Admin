@@ -118,7 +118,7 @@ const Homepage = () => {
       </div>
       <Line data={data} />
       <h4>Đơn hàng gần nhất</h4>
-      {filteredOrders.map((e, k) => {
+      {filteredOrders.slice(0, 3).map((e, k) => {
         const renderOption = (value, label) => {
           // Kiểm tra nếu trạng thái đơn hàng là "6" thì chỉ hiển thị tùy chọn "Hủy"
           if (e.status === "6" && value !== "6") {

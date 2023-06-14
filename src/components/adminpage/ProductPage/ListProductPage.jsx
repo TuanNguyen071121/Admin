@@ -30,6 +30,7 @@ const handleInput=(event)=>{
 const deleteProduct = async (id) => {
     const conn = db.collection("product").doc(id);
     await conn.delete();  
+    alert("Xóa sản phẩm thành công!")
     refresh();  
 }
 
@@ -104,6 +105,7 @@ const refresh=async()=>{
                                                                                     const id = e.id;
                                                                                     const conn = db.collection("product").doc(id);
                                                                                     await conn.update(form_product);  
+                                                                                    alert("Lưu thành công")
                                                                                     refresh();  
                                                                             }} >
                                                             
@@ -170,7 +172,7 @@ const refresh=async()=>{
                                                     
                                                     
                                                     <hr className="my-4"/>
-                                                        <button type="submit"   className="btn btn-outline-secondary">Lưu</button>
+                                                        <button type="submit"   className="btn btn-outline-secondary" data-bs-dismiss="modal">Lưu</button>
                                                         </form>
                                                             </div>
                                                             {/* <div className="modal-footer">

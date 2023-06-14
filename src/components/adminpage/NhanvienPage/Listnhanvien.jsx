@@ -2,6 +2,7 @@ import React, {useEffect, useState} from "react";
 import 'bootstrap/dist/css/bootstrap.css';
 import UserContext from "../../../context/UserContext";
 import { NavLink } from "react-router-dom";
+import { withRouter } from "react-router-dom";
 import {listStaff} from "../../../services/productAction";
 import db from "../../../db";
 const Listnhanvien =(props)=>{
@@ -29,6 +30,7 @@ const refresh=async()=>{
 const deleteProduct = async (id) => {
     const conn = db.collection("staff").doc(id);
     await conn.delete();  
+    alert("Xóa nhân viên thành công!")
     refresh();  
 }
         return(
@@ -100,9 +102,11 @@ const deleteProduct = async (id) => {
                                                             <div className="modal-body">
                                                         <form method="post" onSubmit={async(event)=> {
                                                                                  event.preventDefault();
+                                                                                 
                                                                                     const id = e.id;
                                                                                     const conn = db.collection("staff").doc(id);
                                                                                     await conn.update(form_product);  
+                                                                                    alert("Lưu thành công!");
                                                                                     refresh();  
                                                                             }} >
                                                             
@@ -146,7 +150,7 @@ const deleteProduct = async (id) => {
                                                         </div>
                                                         
                                                     <hr className="my-4"/>
-                                                        <button type="sumbit" className="btn btn-outline-secondary">Lưu</button>
+                                                        <button type="sumbit" className="btn btn-outline-secondary" data-bs-dismiss="modal">Lưu</button>
                                                     </form>
                                                             </div>
                                                             {/* <div className="modal-footer">

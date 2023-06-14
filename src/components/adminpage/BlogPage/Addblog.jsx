@@ -10,7 +10,9 @@ const AddBlog =(props)=>{
     e.preventDefault();
     const conn = db.collection("blog");
             await conn.add(form_product);  
+            alert("Thêm blog thành công")
             this.refresh();  
+            
  };  
  const handleInput=(event)=>{
         console.log(event)
